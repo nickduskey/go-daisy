@@ -25,6 +25,13 @@ func executableName() string {
 	return executableName
 }
 
+func InstallDeps() error {
+	if err := sh.RunV("go", "mod", "tidy"); err != nil {
+		return err
+	}
+	return sh.RunV("pnpm", "install")
+}
+
 // Build builds production binaries for the application
 func Build() error {
 	fmt.Println("Executing `Build` task...")
