@@ -1,25 +1,46 @@
-# templ-quickstart
+# go-daisy
+> A project scaffold based on [https://github.com/phillip-england/templ-quickstart](https://github.com/phillip-england/templ-quickstart).
 
 ## Introduction
+`go-daisy` provides a quick and easy way to scaffold a web application built with Go, Echo, Postgresql, Bun, Templ, Htmx, Tailwindcss, DaisyUI, Air and Mage.
 
-templ-quickstart provides a quick and easy way to scaffold an Go http server. The tech stack included in this repo includes Go, HTMX, Templ, and Tailwind.
+## Development Environment
+### Go
+[Go](https://go.dev/) Version 1.22.0 or greater is required and must be on your `PATH`.
 
-## Core Technologies
+Installation instructions.
 
-As mentioned above, this project depends on some awesome technologies. Let me start by giving credit where credit is due:
+### Templ
+[Templ](https://templ.guide/) is required and must be on your `PATH`.
 
-- [Go](https://go.dev/) - Version 1.22.0 or greater required
-- [Templ](https://templ.guide/)
-- [Air](https://github.com/cosmtrek/air)
-- [Htmx](https://htmx.org/)
-- [Tailwindcss](https://tailwindcss.com/)
+Installation instructions.
 
-## Installation
+### Air
+[Air](https://github.com/cosmtrek/air) is required and must be on your `PATH`.
 
+Installation instructions.
+
+### Tailwindcss
+[Tailwindcss](https://tailwindcss.com/) standalone cli is required and must be on your `PATH`.
+
+### Environment Variables
+You must set the following environment variables:
+- `HOST`
+- `PORT`
+- `DB_PORT`
+- `DB_HOST`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+
+You may set the following optional environment variables:
+- `LOGDIR_PATH`
+- `LOG_LEVEL`
+- `DEBUG`
+
+## Scaffolding a New Project
 ### Clone the Repository
-
 ```bash
-git clone https://github.com/phillip-england/templ-quickstart <target-directory>
+git clone https://github.com/nickduskey/go-daisy <target-directory>
 ```
 
 ```bash
@@ -32,35 +53,20 @@ cd <target-directory>
 go mod tidy
 ```
 
-### Create a .env file and include a PORT variable
+### Clone the .env.example file and configure required variables
 
 ```bash
-touch .env; 
+cp .env.example .env
 ```
 
-```bash
-echo "PORT=8080" > .env
-```
+## Tasks
 
-## Build Steps and Serving
-
-This project requires a build step. The following are commands needed to build your html and css output.
-
-### Templ HTML Generation
-
-With templ installed and the binary somewhere on your PATH, run the following to generate your HTML components and templates (remove --watch to simply build and not hot reload)
-
-```bash
-templ generate --watch
-```
-
-### CSS File Generation
-
-With the [Tailwind Binary](https://tailwindcss.com/blog/standalone-cli) installed and moved somewhere on your PATH, run the following to generate your CSS output for your tailwind classes (remove --watch to simply build and not hot reload)
-
-```bash
-tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
-```
+This project uses Mage for task running. The following tasks are included:
+- `dev` - Calls `air` & `templ:watch` & `tailwind:watch`
+- `templ:gen` - Calls `templ generate`
+- `templ:watch` - Calls `templ generate --watch`
+- `tailwind:build` - Calls `tailwindcss -i ./static/css/input.css -o ./static/css/output.css`
+- `tailwind:watch` - Calls `tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch`
 
 ### Serving with Air
 
