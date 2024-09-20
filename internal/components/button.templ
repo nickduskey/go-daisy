@@ -1,0 +1,65 @@
+package components
+
+type ButtonColor string
+type ButtonSize string
+
+const (
+    ButtonColorNeutral ButtonColor = "neutral"
+    ButtonColorPrimary ButtonColor = "primary"
+    ButtonColorSecondary ButtonColor = "secondary"
+    ButtonColorAccent ButtonColor = "accent"
+    ButtonColorInfo ButtonColor = "info"
+    ButtonColorSuccess ButtonColor = "success"
+    ButtonColorWarning ButtonColor = "warning"
+    ButtonColorError ButtonColor = "error"
+    
+    ButtonSizeLg ButtonSize = "lg"
+    ButtonSizeMd ButtonSize = "md"
+    ButtonSizeSm ButtonSize = "sm"
+    ButtonSizeXs ButtonSize = "xs"
+)
+
+type ButtonConfig struct {
+    Color ButtonColor
+    Ghost bool
+    Link bool
+    Outline bool
+    Active bool
+    Disabled bool
+    Glass bool
+    NoAnimation bool
+    Size ButtonSize
+    Wide bool
+    Block bool
+    Circle bool
+    Square bool
+}
+
+templ Button(text string, conf ButtonConfig) {
+    <button class={
+        "btn",
+        templ.KV("btn-neutral", conf.Color == ButtonColorNeutral),
+        templ.KV("btn-primary", conf.Color == ButtonColorPrimary),
+        templ.KV("btn-secondary", conf.Color == ButtonColorSecondary),
+        templ.KV("btn-accent", conf.Color == ButtonColorAccent),
+        templ.KV("btn-info", conf.Color == ButtonColorInfo),
+        templ.KV("btn-success", conf.Color == ButtonColorSuccess),
+        templ.KV("btn-warning", conf.Color == ButtonColorWarning),
+        templ.KV("btn-error", conf.Color == ButtonColorError),
+        templ.KV("btn-ghost", conf.Ghost),
+        templ.KV("btn-link", conf.Link),
+        templ.KV("btn-outline", conf.Outline),
+        templ.KV("btn-active", conf.Active),
+        templ.KV("btn-disabled", conf.Disabled),
+        templ.KV("glass", conf.Glass),
+        templ.KV("no-animation", conf.NoAnimation),
+        templ.KV("btn-lg", conf.Size == ButtonSizeLg),
+        templ.KV("btn-md", conf.Size == ButtonSizeMd),
+        templ.KV("btn-sm", conf.Size == ButtonSizeSm),
+        templ.KV("btn-xs", conf.Size == ButtonSizeXs),
+        templ.KV("btn-wide", conf.Wide),
+        templ.KV("btn-block", conf.Block),
+        templ.KV("btn-circle", conf.Circle),
+        templ.KV("btn-square", conf.Square),
+    }>{ text }</button>
+}

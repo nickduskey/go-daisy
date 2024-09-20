@@ -1,6 +1,9 @@
 package template
 
-import "xerus/internal/component"
+import (
+    "github.com/nickduskey/go-daisy/internal/component"
+    "github.com/nickduskey/go-daisy/internal/components"
+)
 
 
 templ Base(title string) {
@@ -21,13 +24,14 @@ templ Base(title string) {
     </html>
 }
 
-
-
-// route!("GET /")
-// middleware!(ParseForm)
 templ Home(title string) {
     @Base(title) {
         @component.TextAndTitle("I'm a Component!", "I am included as a content item in the Base Template!")
 		@component.TextAndTitle("I'm another Component!", "I am also included in the Base Template!")
+		@components.Button("Hello, I'm a DaisyUI Button", components.ButtonConfig{
+      Color: components.ButtonColorPrimary,
+      Size: components.ButtonSizeLg,
+      Glass: true,
+    })
     }
 }

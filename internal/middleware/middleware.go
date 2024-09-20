@@ -2,49 +2,43 @@ package middleware
 
 import (
 	"context"
-	"fmt"
-	"net/http"
-	"time"
+	"log/slog"
+	"os"
 
-	"github.com/a-h/templ"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
-type CustomContext struct {
-	context.Context
-	StartTime time.Time
+func setupLogger(e *echo.Echo) {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogStatus:   true,
+		LogURI:      true,
+		LogError:    true,
+		HandleError: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			if v.Error == nil {
+				logger.LogAttrs(context.Background(), slog.LevelInfo, "REQUEST",
+					slog.String("uri", v.URI),
+					slog.Int("status", v.Status),
+				)
+			} else {
+				logger.LogAttrs(context.Background(), slog.LevelError, "REQUEST_ERROR",
+					slog.String("uri", v.URI),
+					slog.Int("status", v.Status),
+					slog.String("err", v.Error.Error()),
+				)
+			}
+			return nil
+		},
+	}))
 }
 
-type CustomHandler func(ctx *CustomContext, w http.ResponseWriter, r *http.Request)
-type CustomMiddleware func(ctx *CustomContext, w http.ResponseWriter, r *http.Request) error
-
-func Chain(w http.ResponseWriter, r *http.Request, template templ.Component, middleware ...CustomMiddleware) {
-	customContext := &CustomContext{
-		Context:   context.Background(),
-		StartTime: time.Now(),
-	}
-	for _, mw := range middleware {
-		err := mw(customContext, w, r)
-		if err != nil {
-			return
-		}
-	}
-	template.Render(customContext, w)
-	Log(customContext, w, r)
-}
-
-func Log(ctx *CustomContext, w http.ResponseWriter, r *http.Request) error {
-	elapsedTime := time.Since(ctx.StartTime)
-	formattedTime := time.Now().Format("2006-01-02 15:04:05")
-	fmt.Printf("[%s] [%s] [%s] [%s]\n", formattedTime, r.Method, r.URL.Path, elapsedTime)
-	return nil
-}
-
-func ParseForm(ctx *CustomContext, w http.ResponseWriter, r *http.Request) error {
-	r.ParseForm()
-	return nil
-}
-
-func ParseMultipartForm(ctx *CustomContext, w http.ResponseWriter, r *http.Request) error {
-	r.ParseMultipartForm(10 << 20)
-	return nil
+func Apply(e *echo.Echo) {
+	setupLogger(e)
+	e.Use(middleware.BodyLimit("2M"))
+	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+		Level: 5,
+	}))
+	e.Use(middleware.RequestID())
 }

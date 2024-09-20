@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/joho/godotenv"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
+	"github.com/nickduskey/go-daisy/internal/server"
 )
 
 // Default target to run when none is specified
@@ -63,7 +65,10 @@ func (Templ) Gen() error {
 }
 
 func (Templ) Watch() error {
-	return sh.RunV("templ", "generate", "--watch")
+	_ = godotenv.Load()
+	address := server.BuildServerAddress()
+	proxyFlag := fmt.Sprintf("--proxy=http://%s", address)
+	return sh.RunV("templ", "generate", "--watch", proxyFlag, "--open-browser=false")
 }
 
 type Tailwind mg.Namespace
